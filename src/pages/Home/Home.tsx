@@ -14,9 +14,11 @@ const Home: FC = () => {
     const {status, people, isFinished, page, limit} = useSelector((state: RootState) => state.people);
     const dispatch = useDispatch<AppDispatch>();
 
-    const scrollHandler = (e: any) => {
-        let scrollHeight = e.target.documentElement.scrollHeight;
-        let scrollTop = e.target.documentElement.scrollTop;
+    const scrollHandler = (e: Event) => {
+        const target = e.target;
+        if (!(target instanceof Document)) return;
+        let scrollHeight = target.documentElement.scrollHeight;
+        let scrollTop = target.documentElement.scrollTop;
         let innerHeight = window.innerHeight;
         if (scrollHeight - (scrollTop + innerHeight) < 100) {
             dispatch(setStatus(Status.LOADING));
