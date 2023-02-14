@@ -26,7 +26,7 @@ const peopleSlice = createSlice({
         builder.addCase(fetchPeopleData.fulfilled, (state, action: PayloadAction<PeopleItem[]>) => {
             state.status = Status.SUCCESS;
             if (action.payload.length === 0) {
-                state.isFinished = true
+                state.isFinished = true;
             }
             action.payload.map(item => state.people = [...state.people, item]);
         });
