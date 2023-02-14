@@ -1,4 +1,3 @@
-import {Writable} from "stream";
 
 export type PeopleItem = {
     name: string,

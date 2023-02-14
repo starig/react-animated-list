@@ -6,9 +6,9 @@ import PeopleListItem from "../../components/PeopleItem/PeopleListItem";
 import styles from './Home.module.css';
 import {increasePage, setStatus} from "../../redux/slices/people/peopleSlice";
 import {Status} from "../../redux/slices/people/types";
-import Loader from "../../components/Loader/Loader";
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
+import Footer from "../../components/Footer/Footer";
 
 const Home: FC = () => {
     const {status, people, isFinished, page, limit} = useSelector((state: RootState) => state.people);
@@ -47,7 +47,7 @@ const Home: FC = () => {
         <div className={styles.wrapper}>
             {
                 people.map((item, id) => {
-                    return <Fade bottom cascade opposite collapse key={id}>
+                    return <Fade bottom key={id}>
                         <div>
                             {
                                 PeopleListItem(item)
@@ -57,9 +57,7 @@ const Home: FC = () => {
                     </Fade>;
                 })
             }
-            {
-                isFinished ? 'That`s all people!' : status === Status.LOADING && <Loader/>
-            }
+            <Footer />
         </div>
     );
 }
