@@ -2,14 +2,16 @@ import React, {FC, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../redux/store";
 import {fetchPeopleData} from "../../redux/actions";
-import PeopleListItem from "../../components/PeopleItem/PeopleItem";
-import styles from './Home.module.scss';
+import PeopleListItem from "../../components/PeopleItem/PeopleListItem";
+import styles from './Home.module.css';
 import {increasePage, setStatus} from "../../redux/slices/people/peopleSlice";
 import {Status} from "../../redux/slices/people/types";
 import Loader from "../../components/Loader/Loader";
+// @ts-ignore
+import Fade from 'react-reveal/Fade';
 
-const Home: FC= () => {
-    const { status, people, isFinished, page, limit} = useSelector((state: RootState) => state.people);
+const Home: FC = () => {
+    const {status, people, isFinished, page, limit} = useSelector((state: RootState) => state.people);
     const dispatch = useDispatch<AppDispatch>();
 
     const scrollHandler = (e: any) => {
@@ -33,6 +35,7 @@ const Home: FC= () => {
         }
     }, [status]);
 
+
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler);
         return function () {
@@ -44,11 +47,18 @@ const Home: FC= () => {
         <div className={styles.wrapper}>
             {
                 people.map((item, id) => {
-                    return <div key={id}>{PeopleListItem(item)}</div>;
+                    return <Fade bottom cascade opposite collapse key={id}>
+                        <div>
+                            {
+                                PeopleListItem(item)
+                            }
+                        </div>
+
+                    </Fade>;
                 })
             }
             {
-                isFinished ? 'That`s all people!' : status === Status.LOADING && <Loader />
+                isFinished ? 'That`s all people!' : status === Status.LOADING && <Loader/>
             }
         </div>
     );
