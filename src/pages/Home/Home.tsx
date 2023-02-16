@@ -17,8 +17,8 @@ const Home: FC = () => {
     const scrollHandler = (e: Event) => {
         const target = e.target;
         if (!(target instanceof Document)) return;
-        cosnt scrollHeight = target.documentElement.scrollHeight;
-        cosnt scrollTop = target.documentElement.scrollTop;
+        const scrollHeight = target.documentElement.scrollHeight;
+        const scrollTop = target.documentElement.scrollTop;
         const innerHeight = window.innerHeight;
         if (scrollHeight - (scrollTop + innerHeight) < 100) {
             dispatch(setStatus(Status.LOADING));
