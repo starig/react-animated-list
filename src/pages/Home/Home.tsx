@@ -17,9 +17,9 @@ const Home: FC = () => {
     const scrollHandler = (e: Event) => {
         const target = e.target;
         if (!(target instanceof Document)) return;
-        let scrollHeight = target.documentElement.scrollHeight;
-        let scrollTop = target.documentElement.scrollTop;
-        let innerHeight = window.innerHeight;
+        cosnt scrollHeight = target.documentElement.scrollHeight;
+        cosnt scrollTop = target.documentElement.scrollTop;
+        const innerHeight = window.innerHeight;
         if (scrollHeight - (scrollTop + innerHeight) < 100) {
             dispatch(setStatus(Status.LOADING));
         }
@@ -28,12 +28,10 @@ const Home: FC = () => {
     useEffect(() => {
         if (status === Status.LOADING && !isFinished) {
             dispatch(increasePage());
-            (async () => {
-                await dispatch(fetchPeopleData({
+            dispatch(fetchPeopleData({
                     page,
                     limit
                 }));
-            })();
         }
     }, [status]);
 
