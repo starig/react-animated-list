@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../redux/store";
 import {fetchPeopleData} from "../../redux/actions";
@@ -9,55 +9,63 @@ import {Status} from "../../redux/slices/people/types";
 // @ts-ignore
 import Fade from 'react-reveal/Fade';
 import Footer from "../../components/Footer/Footer";
+import { useInView } from 'react-intersection-observer';
 
 const Home: FC = () => {
     const {status, people, isFinished, page, limit} = useSelector((state: RootState) => state.people);
     const dispatch = useDispatch<AppDispatch>();
 
-    const scrollHandler = (e: Event) => {
-        const target = e.target;
-        if (!(target instanceof Document)) return;
-        const scrollHeight = target.documentElement.scrollHeight;
-        const scrollTop = target.documentElement.scrollTop;
-        const innerHeight = window.innerHeight;
-        if (scrollHeight - (scrollTop + innerHeight) < 100) {
+    const {ref, inView} = useInView({
+        threshold: 0.7,
+    });
+
+    useEffect(() => {
+        if (inView) {
+            dispatch(increasePage());
             dispatch(setStatus(Status.LOADING));
         }
-    };
+    }, [inView]);
+
 
     useEffect(() => {
         if (status === Status.LOADING && !isFinished) {
-            dispatch(increasePage());
             dispatch(fetchPeopleData({
-                    page,
-                    limit
-                }));
+                page,
+                limit
+            }));
         }
-    }, [status]);
+    }, [page]);
 
 
-    useEffect(() => {
-        document.addEventListener('scroll', scrollHandler);
-        return function () {
-            document.removeEventListener('scroll', scrollHandler);
-        }
-    });
 
     return (
         <div className={styles.wrapper}>
             {
                 people.map((item, id) => {
-                    return <Fade bottom key={id}>
-                        <div>
-                            {
-                                PeopleListItem(item)
-                            }
-                        </div>
+                    if (id === people.length - 1 && status != Status.LOADING && !isFinished) {
 
-                    </Fade>;
+                        return  <div key={id} ref={ref}>
+                            <Fade bottom>
+                                <div>
+                                    {
+                                        PeopleListItem(item)
+                                    }
+                                </div>
+                            </Fade>
+                        </div>
+                    } else {
+                        return <Fade bottom key={id}>
+                            <div>
+                                {
+                                    PeopleListItem(item)
+                                }
+                            </div>
+
+                        </Fade>;
+                    }
                 })
             }
-            <Footer />
+            <Footer/>
         </div>
     );
 }
